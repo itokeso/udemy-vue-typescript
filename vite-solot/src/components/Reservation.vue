@@ -1,6 +1,26 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import Card from './Card.vue';
-import Badge from './Badge.vue'
+import Badge from './Badge.vue';
+import ListReservation from './ListReservation.vue';
+import ReservationList from './ReservationList.vue';
+
+const isListVisible = ref<boolean>(true)
+
+const isDialogOpen = ref<boolean>(false)
+
+const onClickButton = () => {
+    // isListVisible.value = !isListVisible.value
+    isDialogOpen.value = !isDialogOpen.value
+}
+
+const getContent = () => {
+    if (isListVisible.value) {
+        return ReservationList;
+    } else {
+        return ListReservation;
+    }
+}
 </script>
 
 <template>
@@ -18,27 +38,19 @@ import Badge from './Badge.vue'
                 </div>
             </Card>
         </div>
-        <Card class="reservation-card">
-            <span>John Wick</span>
-            <span>Badges</span>
-            <Badge class="vip-badge">
-                <span >VIP</span>
-            </Badge>
-        </Card>
-        <Card class="reservation-card">
-            <span>ito</span>
-            <span>Badges</span>
-            <Badge class="normal-badge">
-                <span>Normal</span>
-            </Badge>            
-        </Card>
-        <Card class="reservation-card">
-            <span>tanaka</span>
-            <span>Badges</span>
-            <Badge class="vip-badge">
-                <span>VIP</span>
-            </Badge>
-        </Card>
+        <component :is="getContent()" />
+        <!-- <div v-if="isListVisible">
+            <ReservationList />
+        </div>
+        <div v-else>
+            <ListReservation />
+        </div> -->
+        <button @click="onClickButton">change</button>
+        <teleport to="body">
+            <dialog class="dialog" :open="isDialogOpen">
+                <span>Dialog</span>
+            </dialog>
+        </teleport>
     </div>
 </template>
 
@@ -58,14 +70,15 @@ import Badge from './Badge.vue'
     margin-bottom: 24px;
 }
 
-.reservation-card {
-    width: 400px;
-    height: 60px;
-    background-color: rgb(255, 212, 147);
+.badges {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+    width: 60%;
+}
+
+.normal-badge {
+    background-color: blue;
+    color: white;
 }
 
 .vip-badge {
@@ -73,13 +86,15 @@ import Badge from './Badge.vue'
     color: white;
 }
 
-.badges {
-    display: flex;
-    justify-content: space-between;
-    width: 60%;
-}
-.normal-badge {
-    background-color: blue;
-    color: white;
+.dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    width: 300px;
+    margin: auto;
+    background-color: aliceblue;
 }
 </style>
